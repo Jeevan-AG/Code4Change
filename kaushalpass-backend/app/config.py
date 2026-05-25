@@ -45,16 +45,7 @@ class Settings(BaseSettings):
 
     # Storage
     TTS_BUCKET: str = "tts-audio"
-    DOCUMENTS_BUCKET: str = "documents"
-    CERTIFICATES_BUCKET: str = "certificates"
     TTS_SIGNED_URL_EXPIRY_SECONDS: int = 3600
-    STORAGE_SIGNED_URL_EXPIRY_SECONDS: int = 3600
-
-    # Public verify / certificate QR
-    APP_URL: str = "https://kaushalpass.in"
-
-    # Nemotron vision
-    NEMOTRON_MODEL: str = "nvidia/nemotron-3-nano-omni-30b"
 
     # JWKS cache TTL
     JWKS_CACHE_TTL_SECONDS: int = 3600

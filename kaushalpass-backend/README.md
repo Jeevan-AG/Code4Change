@@ -30,7 +30,7 @@ Run in order in Supabase SQL Editor:
 2. `migrations/002_rls_policies.sql`
 3. `migrations/003_indexes.sql`
 
-Create Storage buckets (private; signed URLs): `tts-audio`, `documents`, `certificates`.
+Create Storage bucket: `tts-audio` (private; signed URLs used).
 
 ### Run locally
 
@@ -38,23 +38,12 @@ Create Storage buckets (private; signed URLs): `tts-audio`, `documents`, `certif
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## API endpoints
+## Person 1 endpoints
 
 | Method | Path | Auth |
 |--------|------|------|
 | GET | `/health` | No |
 | POST | `/api/v1/voice/assess` | Bearer JWT |
-| GET | `/api/v1/auth/me` | Bearer JWT |
-| POST | `/api/v1/auth/profile` | Bearer JWT |
-| GET | `/api/v1/passport/me` | Bearer JWT |
-| POST/PUT/DELETE | `/api/v1/passport/skills` | Bearer JWT |
-| POST | `/api/v1/documents/upload` | Bearer JWT |
-| GET | `/api/v1/documents/{id}/url` | Bearer JWT |
-| POST | `/api/v1/certificate/generate` | Bearer JWT |
-| GET | `/api/v1/certificate/status/{id}` | No |
-| GET | `/api/v1/verifier/queue` | Bearer JWT |
-| POST | `/api/v1/verifier/submit/{id}` | Bearer JWT |
-| GET | `/api/v1/verify/{passport_id}` | **Public** |
 
 ### Voice assess (multipart)
 
@@ -70,6 +59,11 @@ ruff check app/
 mypy app/
 ```
 
-## Person 2 (implemented)
+## Handoff to Person 2
 
-Auth, passport, documents (Nemotron + pHash), certificate PDF, verifier consensus, public verify — all registered in `app/api/v1/router.py`.
+After migrations are applied, Person 2 adds:
+
+- `auth/`, `passport/`, `documents/`, `certificate/`, `verifier/`, `verify/` routers
+- Nemotron + certificate services
+
+Register new routers in `app/api/v1/router.py`.
