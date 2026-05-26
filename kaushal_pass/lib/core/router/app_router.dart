@@ -10,11 +10,16 @@ import '../../features/passport/presentation/passport_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/community/presentation/community_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/login',
     routes: [
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => '/login',
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -50,6 +55,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/community',
         builder: (context, state) => const CommunityScreen(),
+      ),
+      GoRoute(
+        path: '/chat',
+        builder: (context, state) => const ChatScreen(),
       ),
     ],
   );

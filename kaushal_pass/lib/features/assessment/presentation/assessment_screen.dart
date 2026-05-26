@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../../core/services/ai_voice_service.dart';
 import '../../profile/data/user_provider.dart';
 
 class AssessmentScreen extends ConsumerStatefulWidget {
@@ -15,7 +17,8 @@ class AssessmentScreen extends ConsumerStatefulWidget {
 
 class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
   CameraController? _cameraController;
-  final FlutterTts _flutterTts = FlutterTts();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  late final AiVoiceService _aiVoiceService;
   bool _isRecording = false;
   bool _isProcessing = false;
   bool _cameraInitialized = false;
@@ -26,17 +29,36 @@ class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
   void initState() {
     super.initState();
     _initializeCamera();
-    _initTts();
   }
 
-  void _initTts() async {
-    await _flutterTts.setLanguage("en-IN");
-    await _flutterTts.setPitch(1.0);
-    await _flutterTts.setSpeechRate(0.5);
-    // Simulate AI greeting
-    Future.delayed(const Duration(seconds: 1), () {
-      _flutterTts.speak("Hello! Please turn on the camera and tell me about your work.");
-    });
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _aiVoiceService = ref.read(aiVoiceServiceProvider);
+    _playGreeting();
+  }
+
+  bool _greetingPlayed = false;
+
+  void _playGreeting() async {
+    if (_greetingPlayed) return;
+    _greetingPlayed = true;
+    final user = ref.read(userProfileProvider);
+    
+    // Fallback to local processing info if API is not set
+    if (dotenv.env['AI_VOICE_API_KEY']?.isEmpty ?? true) {
+       debugPrint("API Key not found, skipping AI greeting.");
+       return;
+    }
+
+    final audioPath = await _aiVoiceService.generateSpeech(
+      "Hello ${user.name}! Please tell me about your work.", 
+      user.language
+    );
+    
+    if (audioPath != null && mounted) {
+      await _audioPlayer.play(DeviceFileSource(audioPath));
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -75,7 +97,7 @@ class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
   @override
   void dispose() {
     _cameraController?.dispose();
-    _flutterTts.stop();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -87,19 +109,29 @@ class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
       setState(() => _isProcessing = true);
       
       try {
-        await _cameraController!.stopVideoRecording();
-        await _flutterTts.speak("Thank you. I am analyzing your video now.");
+        final videoFile = await _cameraController!.stopVideoRecording();
+        
+        final user = ref.read(userProfileProvider);
+        final responseAudioPath = await _aiVoiceService.processVoiceResponse(videoFile.path, user.language);
+        
+        if (responseAudioPath != null && mounted) {
+           await _audioPlayer.play(DeviceFileSource(responseAudioPath));
+           // Wait for audio to finish before navigating
+           _audioPlayer.onPlayerComplete.listen((event) {
+             if (mounted) context.push('/result');
+           });
+        } else {
+           if (mounted) context.push('/result');
+        }
       } catch (e) {
-        debugPrint("Stop recording error: \$e");
+        debugPrint("Stop recording error: $e");
       }
-
-      await Future.delayed(const Duration(seconds: 4));
-      if (mounted) context.push('/result');
     } else {
       try {
         await _cameraController!.startVideoRecording();
         setState(() => _isRecording = true);
-        await _flutterTts.speak("I am listening.");
+        // Stop greeting if it's still playing
+        await _audioPlayer.stop();
       } catch (e) {
         debugPrint("Start recording error: \$e");
       }

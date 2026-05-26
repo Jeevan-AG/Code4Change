@@ -207,6 +207,12 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/chat'),
+        backgroundColor: const Color(0xFF7C3AED),
+        icon: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+        label: Text(AppLocales.get('chat', lang) ?? 'Ask AI', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ).animate().scale(delay: 800.ms),
     );
   }
 }
