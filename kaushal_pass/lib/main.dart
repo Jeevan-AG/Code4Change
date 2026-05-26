@@ -9,26 +9,26 @@ void main() async {
   
   // Initialize Hive for offline support
   await Hive.initFlutter();
-  await Hive.openBox('kaushalBox');
+  await Hive.openBox('credoraBox');
 
   // Supabase initialization would go here
   // await Supabase.initialize(...);
 
   runApp(
     const ProviderScope(
-      child: KaushalPassApp(),
+      child: CredOraApp(),
     ),
   );
 }
 
-class KaushalPassApp extends ConsumerWidget {
-  const KaushalPassApp({super.key});
+class CredOraApp extends ConsumerWidget {
+  const CredOraApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
-      title: 'KaushalPass',
+      title: 'CredOra',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

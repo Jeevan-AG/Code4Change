@@ -88,7 +88,7 @@ class ProfileScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: FilledButton.icon(
                   onPressed: () async {
-                    await Hive.box('kaushalBox').clear();
+                    await Hive.box('credoraBox').clear();
                     if (context.mounted) {
                       context.go('/login');
                     }

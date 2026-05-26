@@ -9,6 +9,7 @@ import '../../features/assessment/presentation/result_screen.dart';
 import '../../features/passport/presentation/passport_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/community/presentation/community_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -45,6 +46,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/community',
+        builder: (context, state) => const CommunityScreen(),
       ),
     ],
   );

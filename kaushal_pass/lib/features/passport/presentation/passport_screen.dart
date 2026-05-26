@@ -21,7 +21,7 @@ class PassportScreen extends ConsumerWidget {
             child: pw.Column(
               mainAxisAlignment: pw.MainAxisAlignment.center,
               children: [
-                pw.Text('KaushalPass Digital Skill Passport', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                pw.Text('CredOra Digital Skill Passport', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 20),
                 pw.Text('Name: ${user.name.isEmpty ? 'Unknown' : user.name}', style: const pw.TextStyle(fontSize: 18)),
                 pw.Text('State: ${user.state}', style: const pw.TextStyle(fontSize: 18)),
@@ -34,7 +34,7 @@ class PassportScreen extends ConsumerWidget {
                 pw.SizedBox(height: 40),
                 pw.BarcodeWidget(
                   barcode: pw.Barcode.qrCode(),
-                  data: 'https://kaushalpass.gov.in/verify/KP-2026-9812',
+                  data: 'https://credora.in/verify/KP-2026-9812',
                   width: 150,
                   height: 150,
                 ),
@@ -130,7 +130,7 @@ class PassportScreen extends ConsumerWidget {
                           ]
                         ),
                         child: QrImageView(
-                          data: 'https://kaushalpass.gov.in/verify/KP-2026-9812',
+                          data: 'https://credora.in/verify/KP-2026-9812',
                           version: QrVersions.auto,
                           size: 200.0,
                           eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Color(0xFF7C3AED)),

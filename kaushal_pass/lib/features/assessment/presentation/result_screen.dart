@@ -99,7 +99,7 @@ class ResultScreen extends StatelessWidget {
                       const Text('Next Steps to grow your business:', style: TextStyle(color: Colors.black54, fontSize: 14)),
                       const SizedBox(height: 16),
                       _buildRoadmapStep(1, 'Apply for PM Mudra Loan', 'Eligible for up to ₹50,000 to buy bulk mehendi supplies.'),
-                      _buildRoadmapStep(2, 'Join KaushalLink Marketplace', 'List your services online to get booked for weddings.'),
+                      _buildRoadmapStep(2, 'Join CredOra Marketplace', 'List your services online to get booked for weddings.'),
                       _buildRoadmapStep(3, 'Hire 2 Assistants', 'Your skill level allows you to train and manage junior artists.'),
                     ],
                   ),

@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
                     .scale(duration: 600.ms, curve: Curves.easeOutBack),
                 const SizedBox(height: 24),
                 Text(
-                  'KaushalPass',
+                  'CredOra',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,

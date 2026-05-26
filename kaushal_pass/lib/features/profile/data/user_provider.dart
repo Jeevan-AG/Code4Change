@@ -27,7 +27,7 @@ class UserProfile {
 }
 
 class UserProfileNotifier extends Notifier<UserProfile> {
-  final _box = Hive.box('kaushalBox');
+  final _box = Hive.box('credoraBox');
 
   @override
   UserProfile build() {

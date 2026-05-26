@@ -116,7 +116,7 @@ class DashboardScreen extends ConsumerWidget {
                 // Community Banner
                 GestureDetector(
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Community feature coming soon!')));
+                    context.push('/community');
                   },
                   child: Container(
                     padding: const EdgeInsets.all(20),
