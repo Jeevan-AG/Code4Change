@@ -7,6 +7,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
+from reportlab.platypus import Image as RLImage
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from app.db.queries import passport as passport_queries
@@ -83,8 +84,6 @@ async def generate_certificate(user_id: UUID) -> dict:
     qr_buffer = io.BytesIO()
     qr_image.save(qr_buffer, format="PNG")
     qr_buffer.seek(0)
-
-    from reportlab.platypus import Image as RLImage
 
     story.append(Spacer(1, 1 * cm))
     story.append(RLImage(qr_buffer, width=3 * cm, height=3 * cm))

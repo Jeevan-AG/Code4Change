@@ -7,6 +7,7 @@ import json
 import uuid
 from collections.abc import AsyncGenerator
 from datetime import datetime, timezone
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi.responses import StreamingResponse
@@ -15,6 +16,7 @@ from supabase import Client
 from app.api.deps import RedisLike, get_current_user_id, get_redis, get_settings_dep, get_supabase_dep
 from app.config import Settings
 from app.core.rate_limiter import check_voice_assess_quota
+from app.db.queries import assessments as assessments_queries
 from app.services import glm_service, sarvam_service
 from app.services.glm_service import build_assess_result, parse_streamed_assessment
 
@@ -65,34 +67,13 @@ async def _upload_tts_wav(
 
 
 async def _log_usage(supabase: Client, user_id: str, action: str, tokens: int = 0) -> None:
+    """Log usage to usage_logs table."""
     supabase.table("usage_logs").insert(
         {
             "user_id": user_id,
             "action": action,
             "tokens_used": tokens,
             "created_at": datetime.now(timezone.utc).isoformat(),
-        }
-    ).execute()
-
-
-async def _save_assessment(
-    supabase: Client,
-    user_id: str,
-    language_code: str,
-    transcript: str,
-    parsed: dict,
-    glm_raw: str,
-    tts_path: str,
-) -> None:
-    supabase.table("assessments").insert(
-        {
-            "user_id": user_id,
-            "input_type": "voice",
-            "language_code": language_code,
-            "transcribed_text": transcript,
-            "glm_raw_response": {"text": glm_raw},
-            "parsed_result": parsed,
-            "tts_audio_path": tts_path,
         }
     ).execute()
 
@@ -123,7 +104,7 @@ async def voice_assess(
         from app.core.exceptions import ServiceError
 
         raise ServiceError(
-            f"Invalid language_code. Use en-IN (not en), hi-IN, ta-IN, te-IN, kn-IN, or bn-IN.",
+            "Invalid language_code. Use en-IN (not en), hi-IN, ta-IN, te-IN, kn-IN, or bn-IN.",
             400,
         )
 
@@ -185,33 +166,36 @@ async def voice_assess(
         tts_url = ""
         try:
             tts_url = await _upload_tts_wav(supabase, user_id, wav_bytes, settings)
-            storage_path = tts_url.split("/")[-1].split("?")[0]
+            # storage_path is the wav filename without the signed-URL query string
+            storage_path = tts_url.split("?")[0].split("/")[-1]
         except Exception as exc:
             yield _sse_data(json.dumps({"error": f"Storage upload failed: {exc}"}))
             return
 
         assess_payload = build_assess_result(parsed, transcript, tts_url)
 
-        # Persist assessment (background-friendly)
+        # 4. Persist assessment via the shared query layer (async — awaited directly)
         try:
-            await loop.run_in_executor(
-                None,
-                lambda: _save_assessment(
-                    supabase,
-                    user_id,
-                    language_code,
-                    transcript,
-                    assess_payload,
-                    full_text,
-                    storage_path,
-                ),
+            await assessments_queries.insert_assessment(
+                UUID(user_id),
+                input_type="voice",
+                language_code=language_code,
+                transcribed_text=transcript,
+                glm_raw_response={"text": full_text},
+                parsed_result=assess_payload,
+                tts_audio_path=storage_path,
             )
+        except Exception:
+            pass  # non-fatal: stream must complete even if DB write fails
+
+        # 5. Log usage (best-effort, non-blocking)
+        try:
             await loop.run_in_executor(
                 None,
                 lambda: _log_usage(supabase, user_id, "voice_assess"),
             )
         except Exception:
-            pass  # non-fatal for stream completion
+            pass
 
         yield _sse_data(f"[DONE]:{json.dumps(assess_payload, ensure_ascii=False)}")
         yield _sse_data(f"[TTS]:{tts_url}")

@@ -1,28 +1,12 @@
-from datetime import datetime
 from uuid import UUID
 
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
 
+from app.api.v1.verify.schemas import PublicSkill, PublicVerifyResponse
 from app.db.queries import passport as passport_queries
 from app.db.queries import users as users_queries
-from fastapi import HTTPException
 
 router = APIRouter(prefix="/verify", tags=["verify"])
-
-
-class PublicSkill(BaseModel):
-    skill_name: str
-    skill_level: str | None
-    nsqf_level: int | None
-    verification_status: str
-
-
-class PublicVerifyResponse(BaseModel):
-    passport_code: str
-    holder_name: str
-    issued_at: datetime | None
-    skills: list[PublicSkill]
 
 
 @router.get("/{passport_id}", response_model=PublicVerifyResponse)

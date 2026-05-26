@@ -15,6 +15,7 @@ python-multipart==0.0.9
 reportlab==4.2.2
 qrcode[pil]==7.4.2
 python-Levenshtein==0.25.1
+groq==0.4.2
 
 # dev
 mypy==1.10.1

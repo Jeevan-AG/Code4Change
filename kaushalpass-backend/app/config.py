@@ -59,6 +59,10 @@ class Settings(BaseSettings):
     # JWKS cache TTL
     JWKS_CACHE_TTL_SECONDS: int = 3600
 
+    # Scheme Advisor (Groq AI matcher)
+    GROQ_API_KEY: str = ""
+    SCHEME_CACHE_TTL_HOURS: int = 24
+
 
 @lru_cache
 def get_settings() -> Settings:
