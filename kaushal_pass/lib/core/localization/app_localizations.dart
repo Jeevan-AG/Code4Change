@@ -16,6 +16,11 @@ class AppLocales {
       'occupation': 'Occupation',
       'change_language': 'Change Language',
       'cancel': 'Cancel',
+      'verify_peers': 'Verify Peers',
+      'leaderboard': 'Leaderboard',
+      'watch': 'Watch',
+      'verify': 'Verify',
+      'verifications_done': 'verifications done',
     },
     'Hindi': {
       'welcome': 'वापसी पर स्वागत है',
@@ -33,6 +38,11 @@ class AppLocales {
       'occupation': 'पेशा',
       'change_language': 'भाषा बदलें',
       'cancel': 'रद्द करें',
+      'verify_peers': 'साथियों को सत्यापित करें',
+      'leaderboard': 'लीडरबोर्ड',
+      'watch': 'देखें',
+      'verify': 'सत्यापित करें',
+      'verifications_done': 'सत्यापन हो गए',
     },
     'Tamil': {
       'welcome': 'மீண்டும் வருக',
@@ -50,6 +60,11 @@ class AppLocales {
       'occupation': 'தொழில்',
       'change_language': 'மொழியை மாற்றவும்',
       'cancel': 'ரத்து செய்',
+      'verify_peers': 'சக நண்பர்களைச் சரிபார்க்கவும்',
+      'leaderboard': 'லீடர்போர்டு',
+      'watch': 'பார்க்க',
+      'verify': 'சரிபார்க்க',
+      'verifications_done': 'சரிபார்ப்புகள் முடிந்துள்ளன',
     },
     'Telugu': {
       'welcome': 'మళ్లీ స్వాగతం',
@@ -67,6 +82,11 @@ class AppLocales {
       'occupation': 'వృత్తి',
       'change_language': 'భాషను మార్చండి',
       'cancel': 'రద్దు చేయండి',
+      'verify_peers': 'తోటివారిని ధృవీకరించండి',
+      'leaderboard': 'లీడర్‌బోర్డ్',
+      'watch': 'చూడండి',
+      'verify': 'ధృవీకరించండి',
+      'verifications_done': 'ధృవీకరణలు పూర్తయ్యాయి',
     },
     'Kannada': {
       'welcome': 'ಮರಳಿ ಸ್ವಾಗತ',
@@ -84,6 +104,11 @@ class AppLocales {
       'occupation': 'ಉದ್ಯೋಗ',
       'change_language': 'ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಿ',
       'cancel': 'ರದ್ದುಗೊಳಿಸಿ',
+      'verify_peers': 'ಸಹವರ್ತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ',
+      'leaderboard': 'ಲೀಡರ್‌ಬೋರ್ಡ್',
+      'watch': 'ವೀಕ್ಷಿಸಿ',
+      'verify': 'ಪರಿಶೀಲಿಸಿ',
+      'verifications_done': 'ಪರಿಶೀಲನೆಗಳು ಮುಗಿದಿವೆ',
     },
     'Bengali': {
       'welcome': 'আবার স্বাগতম',
@@ -101,6 +126,11 @@ class AppLocales {
       'occupation': 'পেশা',
       'change_language': 'ভাষা পরিবর্তন করুন',
       'cancel': 'বাতিল করুন',
+      'verify_peers': 'সহকর্মীদের যাচাই করুন',
+      'leaderboard': 'লিডারবোর্ড',
+      'watch': 'দেখুন',
+      'verify': 'যাচাই করুন',
+      'verifications_done': 'যাচাইকরণ সম্পন্ন হয়েছে',
     }
   };
 

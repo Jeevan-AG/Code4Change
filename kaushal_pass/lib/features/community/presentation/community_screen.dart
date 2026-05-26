@@ -43,9 +43,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
           labelColor: const Color(0xFF7C3AED),
           unselectedLabelColor: Colors.black54,
           indicatorColor: const Color(0xFF7C3AED),
-          tabs: const [
-            Tab(text: 'Verify Peers'),
-            Tab(text: 'Leaderboard'),
+          tabs: [
+            Tab(text: AppLocales.get('verify_peers', lang)),
+            Tab(text: AppLocales.get('leaderboard', lang)),
           ],
         ),
       ),
@@ -60,15 +60,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
         child: TabBarView(
           controller: _tabController,
           children: [
-            _buildVerifyPeersTab(),
-            _buildLeaderboardTab(),
+            _buildVerifyPeersTab(lang),
+            _buildLeaderboardTab(lang),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildVerifyPeersTab() {
+  Widget _buildVerifyPeersTab(String lang) {
     return ListView.builder(
       padding: const EdgeInsets.all(24),
       itemCount: 3,
@@ -79,12 +79,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
           level: ['NSQF Level 3', 'NSQF Level 2', 'NSQF Level 4'][index],
           imageUrl: 'https://i.pravatar.cc/150?img=${index + 10}',
           delay: index * 200,
+          lang: lang,
         );
       },
     );
   }
 
-  Widget _buildPeerCard({required String name, required String skill, required String level, required String imageUrl, required int delay}) {
+  Widget _buildPeerCard({required String name, required String skill, required String level, required String imageUrl, required int delay, required String lang}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(20),
@@ -129,7 +130,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Playing assessment video...')));
                   },
                   icon: const Icon(Icons.play_circle_outline),
-                  label: const Text('Watch'),
+                  label: Text(AppLocales.get('watch', lang)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF7C3AED),
                     side: const BorderSide(color: Color(0xFF7C3AED)),
@@ -145,7 +146,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('You endorsed $name!')));
                   },
                   icon: const Icon(Icons.verified),
-                  label: const Text('Verify'),
+                  label: Text(AppLocales.get('verify', lang)),
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF7C3AED),
                     foregroundColor: Colors.white,
@@ -161,7 +162,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
     ).animate().fadeIn(delay: delay.ms).slideY(begin: 0.2, end: 0);
   }
 
-  Widget _buildLeaderboardTab() {
+  Widget _buildLeaderboardTab(String lang) {
     return ListView.builder(
       padding: const EdgeInsets.all(24),
       itemCount: 5,
@@ -193,7 +194,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> with SingleTi
               ],
             ),
             title: Text(['Rekha Devi', 'Meena Kumari', 'Kavita Singh', 'Pooja Reddy', 'Neha Verma'][index], style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-            subtitle: Text('${150 - (index * 25)} verifications done'),
+            subtitle: Text('${150 - (index * 25)} ${AppLocales.get('verifications_done', lang)}'),
             trailing: index == 0 ? const Icon(Icons.emoji_events, color: Colors.amber, size: 28) : null,
           ),
         ).animate().fadeIn(delay: (index * 150).ms).slideX(begin: 0.2, end: 0);
