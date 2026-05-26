@@ -21,6 +21,7 @@ class AppLocales {
       'watch': 'Watch',
       'verify': 'Verify',
       'verifications_done': 'verifications done',
+      'chat': 'Ask AI',
     },
     'Hindi': {
       'welcome': 'वापसी पर स्वागत है',
@@ -43,6 +44,7 @@ class AppLocales {
       'watch': 'देखें',
       'verify': 'सत्यापित करें',
       'verifications_done': 'सत्यापन हो गए',
+      'chat': 'AI से पूछें',
     },
     'Tamil': {
       'welcome': 'மீண்டும் வருக',
@@ -65,6 +67,7 @@ class AppLocales {
       'watch': 'பார்க்க',
       'verify': 'சரிபார்க்க',
       'verifications_done': 'சரிபார்ப்புகள் முடிந்துள்ளன',
+      'chat': 'AI-ஐ கேளுங்கள்',
     },
     'Telugu': {
       'welcome': 'మళ్లీ స్వాగతం',
@@ -87,6 +90,7 @@ class AppLocales {
       'watch': 'చూడండి',
       'verify': 'ధృవీకరించండి',
       'verifications_done': 'ధృవీకరణలు పూర్తయ్యాయి',
+      'chat': 'AIని అడగండి',
     },
     'Kannada': {
       'welcome': 'ಮರಳಿ ಸ್ವಾಗತ',
@@ -109,6 +113,7 @@ class AppLocales {
       'watch': 'ವೀಕ್ಷಿಸಿ',
       'verify': 'ಪರಿಶೀಲಿಸಿ',
       'verifications_done': 'ಪರಿಶೀಲನೆಗಳು ಮುಗಿದಿವೆ',
+      'chat': 'AI ಅನ್ನು ಕೇಳಿ',
     },
     'Bengali': {
       'welcome': 'আবার স্বাগতম',
@@ -131,6 +136,7 @@ class AppLocales {
       'watch': 'দেখুন',
       'verify': 'যাচাই করুন',
       'verifications_done': 'যাচাইকরণ সম্পন্ন হয়েছে',
+      'chat': 'AI কে জিজ্ঞাসা করুন',
     }
   };
 

@@ -67,6 +67,63 @@ class SarvamChatService {
     }
   }
 
+  /// Streams a message from the Sarvam Chat API and yields the response chunks.
+  Stream<String> streamMessage(String message, String language) async* {
+    try {
+      final headers = {
+        'api-subscription-key': _apiKey,
+        'Authorization': 'Bearer $_apiKey', // Adding both to be safe
+        'Content-Type': 'application/json',
+      };
+      
+      final request = http.Request('POST', Uri.parse('https://api.sarvam.ai/v1/chat/completions'));
+      request.headers.addAll(headers);
+      request.body = jsonEncode({
+        'model': 'sarvam-30b', // Using their conversational model
+        'messages': [
+          {
+            'role': 'system',
+            'content': 'You are a helpful assistant for CredOra. You MUST respond ONLY in $language. If the user writes in English, translate your thought and reply in $language script. Never reply in English unless $language is English. Be concise and polite.'
+          },
+          {
+            'role': 'user',
+            'content': message,
+          }
+        ],
+        'temperature': 0.7,
+        'stream': true,
+      });
+
+      final response = await http.Client().send(request);
+
+      if (response.statusCode == 200) {
+        await for (var line in response.stream.transform(utf8.decoder).transform(const LineSplitter())) {
+          if (line.startsWith('data: ') && line != 'data: [DONE]') {
+            final dataStr = line.substring(6);
+            try {
+              final data = jsonDecode(dataStr);
+              if (data['choices'] != null && data['choices'].isNotEmpty) {
+                final content = data['choices'][0]['delta']['content'];
+                if (content != null) {
+                  yield content;
+                }
+              }
+            } catch (e) {
+              // ignore parse errors for incomplete chunks
+            }
+          }
+        }
+      } else {
+        final errorBody = await response.stream.bytesToString();
+        debugPrint('Sarvam Chat API Error: ${response.statusCode} - $errorBody');
+        yield 'Sorry, I encountered an error. Please try again later.';
+      }
+    } catch (e) {
+      debugPrint('Error streaming message to Sarvam: $e');
+      yield 'Sorry, there was a network error. Please check your connection.';
+    }
+  }
+
   /// Voice-to-Text using Sarvam API
   Future<String?> speechToText(String audioFilePath, String language) async {
     try {

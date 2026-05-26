@@ -94,8 +94,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       // Start recording
       if (await _audioRecorder.hasPermission()) {
         final dir = await getTemporaryDirectory();
-        final path = '${dir.path}/chat_audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
-        await _audioRecorder.start(const RecordConfig(), path: path);
+        final path = '${dir.path}/chat_audio_${DateTime.now().millisecondsSinceEpoch}.wav';
+        await _audioRecorder.start(const RecordConfig(encoder: AudioEncoder.wav), path: path);
         setState(() {
           _isRecording = true;
         });
@@ -119,35 +119,65 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Future<void> _processAIResponse(String text, String language) async {
-    final response = await _chatService.sendMessage(text, language);
+    bool isFirstChunk = true;
+    final messageIndex = _messages.length;
+    String fullResponse = "";
+
+    try {
+      await for (final chunk in _chatService.streamMessage(text, language)) {
+        if (!mounted) break;
+        
+        if (isFirstChunk) {
+          isFirstChunk = false;
+          setState(() {
+            _isLoading = false;
+            _messages.add(ChatMessage(text: chunk, isUser: false));
+          });
+        } else {
+          setState(() {
+            _messages[messageIndex] = ChatMessage(text: _messages[messageIndex].text + chunk, isUser: false);
+          });
+        }
+        fullResponse += chunk;
+        _scrollToBottom();
+      }
+    } catch (e) {
+      if (isFirstChunk && mounted) {
+        setState(() {
+          _isLoading = false;
+          _messages.add(ChatMessage(text: "Failed to get a response.", isUser: false));
+        });
+      }
+    }
 
     if (!mounted) return;
 
-    if (response != null && response.isNotEmpty) {
-      final newMessage = ChatMessage(text: response, isUser: false);
+    if (!isFirstChunk && fullResponse.isNotEmpty && 
+        fullResponse != "Sorry, I encountered an error. Please try again later." && 
+        fullResponse != "Sorry, there was a network error. Please check your connection.") {
       
-      setState(() {
-        _isLoading = false;
-        _messages.add(newMessage);
-      });
-      _scrollToBottom();
+      // Clean text for TTS (remove markdown that gets read out loud and limit length to Sarvam's 2500 char limit)
+      String cleanText = fullResponse.replaceAll(RegExp(r'[\*\#\_\>\`\[\]\(\)]'), '');
+      cleanText = cleanText.replaceAll(RegExp(r'\s+'), ' ').trim();
+      if (cleanText.length > 2400) {
+        cleanText = cleanText.substring(0, 2400);
+      }
 
       // Fetch TTS asynchronously without blocking the UI
-      _chatService.textToSpeech(response, language).then((audioPath) {
+      _chatService.textToSpeech(cleanText, language).then((audioPath) {
         if (mounted && audioPath != null) {
           setState(() {
-            newMessage.audioPath = audioPath;
+            _messages[messageIndex].audioPath = audioPath;
           });
           // Play the response once ready
           _audioPlayer.play(DeviceFileSource(audioPath));
         }
       });
-    } else {
-      setState(() {
-        _isLoading = false;
-        _messages.add(ChatMessage(text: "Failed to get a response.", isUser: false));
-      });
-      _scrollToBottom();
+    } else if (isFirstChunk) {
+        setState(() {
+          _isLoading = false;
+          _messages.add(ChatMessage(text: "Failed to get a response.", isUser: false));
+        });
     }
   }
 
