@@ -18,7 +18,7 @@ class QueueItem(BaseModel):
 
 class VerifierSubmission(BaseModel):
     rubric_scores: dict = Field(default_factory=dict)
-    overall_score: float = Field(ge=0.0, le=5.0)
+    overall_score: float = Field(ge=0.0, le=1.0)
     notes: str | None = None
 
 

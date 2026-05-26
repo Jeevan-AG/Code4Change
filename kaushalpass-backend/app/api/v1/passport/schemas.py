@@ -9,7 +9,7 @@ class SkillEntryCreate(BaseModel):
     skill_level: str | None = None
     nsqf_level: int | None = Field(default=None, ge=1, le=8)
     confidence_score: float | None = Field(default=None, ge=0.0, le=1.0)
-    verification_status: str = "pending"
+    verification_status: str = "ai_provisional"
 
 
 class SkillEntryUpdate(BaseModel):

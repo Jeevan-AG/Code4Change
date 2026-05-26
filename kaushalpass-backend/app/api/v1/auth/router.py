@@ -1,46 +1,20 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.api.deps import get_current_user_id as get_current_user_id_str
 from app.api.v1.auth.schemas import ProfileCreateRequest, UserResponse
 from app.db.queries import passport as passport_queries
 from app.db.queries import users as users_queries
-from app.db.queries.users import get_settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-_security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user_id(
-    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_security)],
+    user_id: Annotated[str, Depends(get_current_user_id_str)],
 ) -> UUID:
-    if credentials is None or not credentials.credentials:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token")
-    token = credentials.credentials
-    settings = get_settings()
-    try:
-        if settings["supabase_jwt_secret"]:
-            payload = jwt.decode(
-                token,
-                settings["supabase_jwt_secret"],
-                algorithms=["HS256"],
-                audience="authenticated",
-            )
-        else:
-            payload = jwt.get_unverified_claims(token)
-    except JWTError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-        ) from exc
-    sub = payload.get("sub")
-    if not sub:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token subject"
-        )
-    return UUID(str(sub))
+    return UUID(user_id)
 
 
 CurrentUserId = Annotated[UUID, Depends(get_current_user_id)]

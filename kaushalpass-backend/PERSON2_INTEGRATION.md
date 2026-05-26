@@ -1,24 +1,6 @@
 # Person 2 — Integration (for Person 1)
 
-This folder contains **only Person 2** code under `app/`. There is no `app/main.py` — you own the FastAPI app bootstrap.
-
-## Mount routers in your `app/main.py`
-
-```python
-from app.api.v1.auth.router import router as auth_router
-from app.api.v1.passport.router import router as passport_router
-from app.api.v1.documents.router import router as documents_router
-from app.api.v1.certificate.router import router as certificate_router
-from app.api.v1.verifier.router import router as verifier_router
-from app.api.v1.verify.router import router as verify_router
-
-app.include_router(auth_router, prefix="/api/v1")
-app.include_router(passport_router, prefix="/api/v1")
-app.include_router(documents_router, prefix="/api/v1")
-app.include_router(certificate_router, prefix="/api/v1")
-app.include_router(verifier_router, prefix="/api/v1")
-app.include_router(verify_router, prefix="/api/v1")
-```
+Person 2 routers are mounted in `app/api/v1/router.py` (included from `app/main.py`).
 
 ## Person 2 pip dependencies
 
@@ -39,4 +21,4 @@ Apply `supabase/migrations/20250526000001_person2_core_schema.sql` or merge into
 
 ## Auth helper
 
-Protected routes use `CurrentUserId` from `app.api.v1.auth.router` (JWT via `SUPABASE_JWT_SECRET`).
+Protected routes use `CurrentUserId` from `app.api.v1.auth.router`, backed by JWKS/HS256 in `app.api.deps`.

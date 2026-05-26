@@ -1,16 +1,19 @@
-# Backend State — Person 2 only
+# Backend State — integrated (Person 1 + Person 2)
 
-## Scope
+## Integrated
 
-Only files under `app/` listed in the Person 2 task spec (+ migration + integration doc).
+- `app/main.py` — FastAPI app + `/health`
+- `app/api/v1/router.py` — all v1 routers (auth, voice, passport, documents, certificate, verifier, verify)
+- Shared config: `app/config.py` (+ `app/db/queries/users.get_settings()`)
+- Shared auth: `app.api.deps` (JWKS/HS256) → `app.api.v1.auth.router.CurrentUserId`
 
-**Removed to avoid merge conflicts:** `app/main.py`, `app/config.py`, `app/dependencies.py`, `app/exceptions.py`, `app/db/client.py`, `Dockerfile`, `tests/`, `GET /health`.
+## You still need (runtime)
 
-## Person 1 action
+1. Copy `.env.example` → `.env` and set Supabase + Sarvam keys (keep your `NVIDIA_API_KEY`, `APP_URL`)
+2. Run Supabase migrations `migrations/001` → `003`
+3. Create buckets: `tts-audio`, `documents`, `certificates`
+4. `pip install -r requirements.txt` and `uvicorn app.main:app --reload`
 
-See [PERSON2_INTEGRATION.md](PERSON2_INTEGRATION.md) to mount routers and merge requirements.
+## Schema
 
-## Blockers
-
-- Shared Supabase migration with Person 1
-- Storage buckets: `documents`, `certificates`
+Use Person 1 migrations only (`migrations/`). Person 2 code defaults align with `verification_status` enum (`ai_provisional`, etc.).

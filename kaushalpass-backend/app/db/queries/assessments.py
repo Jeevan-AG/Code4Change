@@ -61,7 +61,12 @@ async def get_pending_queue(limit: int = 50) -> list[dict]:
         if parsed.get("verification_escalated"):
             continue
         skill = row.get("skills") or {}
-        if skill.get("verification_status") in (None, "pending", "awaiting_review"):
+        if skill.get("verification_status") in (
+            None,
+            "ai_provisional",
+            "pending",
+            "awaiting_review",
+        ):
             pending.append(row)
     return pending
 

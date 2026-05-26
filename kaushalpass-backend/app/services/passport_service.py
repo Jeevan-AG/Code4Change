@@ -27,7 +27,7 @@ async def add_skill(
     skill_level: str | None = None,
     nsqf_level: int | None = None,
     confidence_score: float | None = None,
-    verification_status: str = "pending",
+    verification_status: str = "ai_provisional",
 ) -> dict:
     passport = await passport_queries.get_passport_by_user(user_id)
     if not passport:

@@ -12,7 +12,7 @@ async def get_passport_by_user(user_id: UUID) -> dict | None:
         .maybe_single()
         .execute()
     )
-    return result.data
+    return result.data if result else None
 
 
 async def get_passport_by_id(passport_id: UUID) -> dict | None:
@@ -24,7 +24,7 @@ async def get_passport_by_id(passport_id: UUID) -> dict | None:
         .maybe_single()
         .execute()
     )
-    return result.data
+    return result.data if result else None
 
 
 async def get_skills(passport_id: UUID, *, include_archived: bool = False) -> list[dict]:
@@ -43,7 +43,7 @@ async def insert_skill(
     skill_level: str | None,
     nsqf_level: int | None,
     confidence_score: float | None,
-    verification_status: str = "pending",
+    verification_status: str = "ai_provisional",
     is_verified: bool = False,
 ) -> dict:
     client = get_supabase_admin()
@@ -53,9 +53,9 @@ async def insert_skill(
             {
                 "passport_id": str(passport_id),
                 "skill_name": skill_name,
-                "skill_level": skill_level,
-                "nsqf_level": nsqf_level,
-                "confidence_score": confidence_score,
+                "skill_level": skill_level or "beginner",
+                "nsqf_level": nsqf_level if nsqf_level is not None else 1,
+                "confidence_score": confidence_score if confidence_score is not None else 0.5,
                 "verification_status": verification_status,
                 "is_verified": is_verified,
             }
@@ -117,4 +117,4 @@ async def get_skill_by_id(skill_id: UUID) -> dict | None:
     result = (
         client.table("skills").select("*").eq("id", str(skill_id)).maybe_single().execute()
     )
-    return result.data
+    return result.data if result else None
