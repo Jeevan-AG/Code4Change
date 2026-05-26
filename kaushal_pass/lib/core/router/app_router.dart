@@ -11,6 +11,7 @@ import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/community/presentation/community_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
+import '../../features/schemes/presentation/schemes_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -26,7 +27,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/otp',
-        builder: (context, state) => const OtpScreen(),
+        builder: (context, state) {
+          // Phone number is passed as extra from login screen
+          final phone = state.extra as String? ?? '';
+          return OtpScreen(phone: phone);
+        },
       ),
       GoRoute(
         path: '/onboarding',
@@ -42,7 +47,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/result',
-        builder: (context, state) => const ResultScreen(),
+        builder: (context, state) {
+          // Assessment result is passed as extra Map<String, dynamic>
+          final result = state.extra as Map<String, dynamic>? ?? {};
+          return ResultScreen(result: result);
+        },
       ),
       GoRoute(
         path: '/passport',
@@ -59,6 +68,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/chat',
         builder: (context, state) => const ChatScreen(),
+      ),
+      GoRoute(
+        path: '/schemes',
+        builder: (context, state) => const SchemesScreen(),
       ),
     ],
   );

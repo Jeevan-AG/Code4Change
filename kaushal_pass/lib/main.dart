@@ -3,19 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await dotenv.load(fileName: ".env");
-  
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+
   // Initialize Hive for offline support
   await Hive.initFlutter();
   await Hive.openBox('credoraBox');
-
-  // Supabase initialization would go here
-  // await Supabase.initialize(...);
 
   runApp(
     const ProviderScope(
@@ -35,13 +39,13 @@ class CredOraApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7C3AED), // Deep violet primary color
+          seedColor: const Color(0xFF7C3AED),
           brightness: Brightness.light,
           primary: const Color(0xFF7C3AED),
           secondary: const Color(0xFFFF9800),
           surface: Colors.white,
         ),
-        textTheme: GoogleFonts.outfitTextTheme(), // Modern, clean typography
+        textTheme: GoogleFonts.outfitTextTheme(),
         useMaterial3: true,
       ),
       routerConfig: router,
